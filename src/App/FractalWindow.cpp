@@ -55,6 +55,7 @@ void FractalWindow::init()
 	program_->enableAttributeArray(0);
 	program_->setAttributeBuffer(0, GL_FLOAT, 0, 2, static_cast<int>(2 * sizeof(GLfloat)));
 
+	// Declare uniform variables
 	fractalColor_1_ = program_->uniformLocation("in_col1");
 	fractalColor_2_ = program_->uniformLocation("in_col2");
 	windowHeight_ = program_->uniformLocation("height");
@@ -90,8 +91,8 @@ void FractalWindow::render()
 	// Clear buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	QVector3D in_col1 = {0.51f, 0.21f, 0.82f};
-	QVector3D in_col2 = {0.13f, 0.41f, 0.83f};
+	QVector3D in_col1 = {0.82f, 0.0f, 0.0f};
+	QVector3D in_col2 = {1.0f, 0.729f, 0.031f};
 
 	// Bind VAO and shader program
 	program_->bind();

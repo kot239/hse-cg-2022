@@ -47,7 +47,7 @@ private:
 	std::unique_ptr<QOpenGLShaderProgram> program_ = nullptr;
 
 	int max_it_ = 500;
-	float radius_ = 10.0f;
+	float radius_ = 20.0f;
 	float power_ = 0.2f;
 	QMatrix4x4 transform_;
 };
