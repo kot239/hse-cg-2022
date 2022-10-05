@@ -19,15 +19,25 @@ public:
 	void init() override;
 	void render() override;
 
+	void setIterations(int it);
+	void setRadius(float radius);
+	void setPower(float power);
+
 protected:
 	void mousePressEvent(QMouseEvent * e) override;
-	//void wheelEvent(QWheelEvent * e) override;
-	//void mouseReleaseEvent(QMouseEvent * e) override;
+	void wheelEvent(QWheelEvent * e) override;
 
 private:
 	GLint fractalColor_1_ = -1;
 	GLint fractalColor_2_ = -1;
+
+	GLint windowHeight_ = -1;
+	GLint windowWidth_ = -1;
+
 	GLint maxIterations_ = -1;
+	GLint fractalRadius_ = -1;
+	GLint fractalPower_ = -1;
+
 	GLint matrix_ = -1;
 
 	QOpenGLBuffer vbo_{QOpenGLBuffer::Type::VertexBuffer};
@@ -36,8 +46,8 @@ private:
 
 	std::unique_ptr<QOpenGLShaderProgram> program_ = nullptr;
 
-	size_t frame_ = 0;
+	int max_it_ = 500;
+	float radius_ = 10.0f;
+	float power_ = 0.2f;
 	QMatrix4x4 transform_;
-
-	QVector3D rotationAxis_{0., 1., 0.};
 };

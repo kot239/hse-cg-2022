@@ -4,7 +4,8 @@ in vec4 gl_FragCoord;
 out vec4 out_col;
 
 uniform vec3 in_col1, in_col2;
-uniform int max_it;
+uniform int max_it, height, width;
+uniform float radius, power;
 uniform mat4 transform;
 
 #define dist(a) a.x * a.x + a.y * a.y
@@ -13,11 +14,9 @@ uniform mat4 transform;
 #define mul(a, b) vec2(a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x)
 #define div(a, b) vec2(((a.x * b.x + a.y * b.y)/(b.x * b.x + b.y * b.y)),((a.y * b.x - a.x * b.y)/(b.x * b.x + b.y * b.y)))
 
-#define CONST_SIZE 640.0f
-
 int pos_iterations()
 {
-	vec4 point = vec4(gl_FragCoord.x / CONST_SIZE, gl_FragCoord.y / CONST_SIZE, 0.0f, 1.0f);
+	vec4 point = vec4(gl_FragCoord.x / float(width), gl_FragCoord.y / float(height), 0.0f, 1.0f);
 	point = transform * point;
 
 	int it = 0;
@@ -26,7 +25,7 @@ int pos_iterations()
 	vec2 one = vec2(1.0, 0.0);
 	vec2 two = vec2(2.0, 0.0);
 
-	while (dist(cur_pos) < 10.0 && it < max_it)
+	while (dist(cur_pos) < radius && it < max_it)
 	{
 		vec2 numerator = add(mul(cur_pos, cur_pos), sub(const_pos, one));
 		vec2 denominator = add(mul(two, cur_pos), sub(const_pos, two));
@@ -46,7 +45,7 @@ vec3 pos_color()
 		return vec3(0.0f, 0.0f, 0.0f);
 	}
 
-	float alpha = pow(float(it) / float(max_it), 0.2);
+	float alpha = pow(float(it) / float(max_it), power);
 	return mix(in_col1, in_col2, alpha);
 }
 

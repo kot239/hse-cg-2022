@@ -3,6 +3,7 @@
 #include <memory>
 
 #include <QWindow>
+#include <QWidget>
 
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>

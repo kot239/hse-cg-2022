@@ -3,7 +3,6 @@
 #include <QMouseEvent>
 #include <QOpenGLFunctions>
 #include <QScreen>
-#include <QDebug>
 
 #include <array>
 
@@ -22,7 +21,6 @@ constexpr std::array<GLuint, 6u> indices = {
 };
 
 constexpr float SCALE = 0.7f;
-constexpr float CONST_SIZE = 640.0f;
 
 }// namespace
 
@@ -59,7 +57,11 @@ void FractalWindow::init()
 
 	fractalColor_1_ = program_->uniformLocation("in_col1");
 	fractalColor_2_ = program_->uniformLocation("in_col2");
+	windowHeight_ = program_->uniformLocation("height");
+	windowWidth_ = program_->uniformLocation("width");
 	maxIterations_ = program_->uniformLocation("max_it");
+	fractalRadius_ = program_->uniformLocation("radius");
+	fractalPower_ = program_->uniformLocation("power");
 	matrix_ = program_->uniformLocation("transform");
 
 	// Release all
@@ -88,18 +90,8 @@ void FractalWindow::render()
 	// Clear buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// Calculate MVP matrix
-	// QMatrix4x4 matrix;
-	/*
-	matrix.perspective(60.0f, 4.0f / 3.0f, 0.1f, 100.0f);
-	matrix.translate(0, 0, -2);
-	const auto angle = 100.0 * static_cast<double>(frame_) / screen()->refreshRate();
-	matrix.rotate(static_cast<float>(angle), rotationAxis_);
-	*/
-
 	QVector3D in_col1 = {0.51f, 0.21f, 0.82f};
 	QVector3D in_col2 = {0.13f, 0.41f, 0.83f};
-	int max_it = 500;
 
 	// Bind VAO and shader program
 	program_->bind();
@@ -108,7 +100,11 @@ void FractalWindow::render()
 	// Update uniform value
 	program_->setUniformValue(fractalColor_1_, in_col1);
 	program_->setUniformValue(fractalColor_2_, in_col2);
-	program_->setUniformValue(maxIterations_, max_it);
+	program_->setUniformValue(windowHeight_, height());
+	program_->setUniformValue(windowWidth_, width());
+	program_->setUniformValue(maxIterations_, max_it_);
+	program_->setUniformValue(fractalRadius_, radius_);
+	program_->setUniformValue(fractalPower_, power_);
 	program_->setUniformValue(matrix_, transform_);
 
 	// Draw
@@ -117,35 +113,38 @@ void FractalWindow::render()
 	// Release VAO and shader program
 	vao_.release();
 	program_->release();
+}
 
-	// Increment frame counter
-	++frame_;
+void FractalWindow::setIterations(int it)
+{
+	max_it_ = it;
+}
+
+void FractalWindow::setRadius(float radius)
+{
+	radius_ = radius;
+}
+
+void FractalWindow::setPower(float power)
+{
+	power_ = power;
 }
 
 void FractalWindow::mousePressEvent(QMouseEvent * e)
 {
-	QVector2D mousePressPosition = QVector2D(e->localPos());
-	QString x = QString::number(-mousePressPosition.x() * 2.0f / CONST_SIZE);
-	QString y = QString::number(-(CONST_SIZE - mousePressPosition.y()) * 2.0f / CONST_SIZE);
-	qDebug() << x << "," << y;
-	transform_.translate(mousePressPosition.x() * 2.0f / CONST_SIZE,
-								(CONST_SIZE - mousePressPosition.y()) * 2.0f / CONST_SIZE);
+	float mousePosX = float(e->x());
+	float mousePosY = float(e->y());
+
+	transform_.translate(mousePosX * 2.0f / width(),
+								(height() - mousePosY) * 2.0f / height());
 	transform_.scale(SCALE, SCALE);
-	transform_.translate(-mousePressPosition.x() * 2.0f / CONST_SIZE,
-								-(CONST_SIZE - mousePressPosition.y()) * 2.0f / CONST_SIZE);
+	transform_.translate(-mousePosX * 2.0f / width(),
+								-(height() - mousePosY) * 2.0f / height());
 }
-/*
+
 void FractalWindow::wheelEvent(QWheelEvent * e)
 {
 	QPoint num_degrees = e->angleDelta();
-	
-
+	float whellScaling = 1.0f - 0.05f * num_degrees.y() / 8.0f;
+	transform_.scale(whellScaling, whellScaling);
 }
-*/
-/*
-void FractalWindow::mouseReleaseEvent(QMouseEvent * e)
-{
-	const auto diff = QVector2D(e->localPos()) - mousePressPosition_;
-	rotationAxis_ = QVector3D(diff.y(), diff.x(), 0.0).normalized();
-}
-*/
