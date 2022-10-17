@@ -1,12 +1,11 @@
 #version 330 core
 
-in vec4 gl_FragCoord;
+in vec2 vert_pos;
 out vec4 out_col;
 
 uniform vec3 in_col1, in_col2;
 uniform int max_it, height, width;
 uniform float radius, power;
-uniform mat4 transform;
 
 #define dist(a) a.x * a.x + a.y * a.y
 #define add(a, b) vec2(a.x + b.x, a.y + b.y)
@@ -16,8 +15,7 @@ uniform mat4 transform;
 
 int pos_iterations()
 {
-	vec4 point = vec4(gl_FragCoord.x / float(width), gl_FragCoord.y / float(height), 0.0f, 1.0f);
-	point = transform * point;
+	vec4 point = vec4(vert_pos.x / float(width), vert_pos.y / float(height), 0.0f, 1.0f);
 
 	int it = 0;
 	vec2 cur_pos = vec2(0.0, 0.0);
@@ -50,7 +48,7 @@ vec3 pos_color()
 }
 
 void main()
-{	
-	vec3 frag_col = pos_color();
-	out_col = vec4(frag_col.rgb, 1.0f);
+{
+    vec3 frag_col = pos_color();
+    out_col = vec4(frag_col.rgb, 1.0f);
 }

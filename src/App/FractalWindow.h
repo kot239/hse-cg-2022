@@ -9,6 +9,8 @@
 #include <QQuaternion>
 #include <QVector2D>
 #include <QVector3D>
+#include <QElapsedTimer>
+#include <QLabel>
 
 #include <memory>
 
@@ -16,6 +18,8 @@ class FractalWindow final : public fgl::GLWindow
 {
 
 public:
+    explicit FractalWindow(QLabel* fps_label): fps_label_(fps_label) {};
+
 	void init() override;
 	void render() override;
 
@@ -28,6 +32,8 @@ protected:
 	void wheelEvent(QWheelEvent * e) override;
 
 private:
+    void countFPS();
+
 	GLint fractalColor_1_ = -1;
 	GLint fractalColor_2_ = -1;
 
@@ -46,7 +52,13 @@ private:
 
 	std::unique_ptr<QOpenGLShaderProgram> program_ = nullptr;
 
-	int max_it_ = 500;
+    int frames_ = 0;
+    float last_time_ = 0.0f;
+    QElapsedTimer timer_;
+
+    QLabel* fps_label_;
+
+	int max_it_ = 100;
 	float radius_ = 20.0f;
 	float power_ = 0.2f;
 	QMatrix4x4 transform_;

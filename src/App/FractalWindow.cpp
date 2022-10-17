@@ -3,6 +3,7 @@
 #include <QMouseEvent>
 #include <QOpenGLFunctions>
 #include <QScreen>
+#include <QDebug>
 
 #include <array>
 
@@ -65,6 +66,10 @@ void FractalWindow::init()
 	fractalPower_ = program_->uniformLocation("power");
 	matrix_ = program_->uniformLocation("transform");
 
+    transform_.scale(1000.0, 1000.0);
+
+    timer_.start();
+
 	// Release all
 	program_->release();
 
@@ -114,6 +119,9 @@ void FractalWindow::render()
 	// Release VAO and shader program
 	vao_.release();
 	program_->release();
+
+    frames_++;
+    countFPS();
 }
 
 void FractalWindow::setIterations(int it)
@@ -133,14 +141,14 @@ void FractalWindow::setPower(float power)
 
 void FractalWindow::mousePressEvent(QMouseEvent * e)
 {
-	float mousePosX = float(e->x());
-	float mousePosY = float(e->y());
+	auto mousePosX = float(e->x()) + 8.0f;
+	auto mousePosY = float(e->y()) + 16.0f;
 
-	transform_.translate(mousePosX * 2.0f / width(),
-								(height() - mousePosY) * 2.0f / height());
+	transform_.translate(2.0f * mousePosX / width() - 1.0f,
+                         2.0f *(height() - mousePosY) / height() - 1.0f);
 	transform_.scale(SCALE, SCALE);
-	transform_.translate(-mousePosX * 2.0f / width(),
-								-(height() - mousePosY) * 2.0f / height());
+	transform_.translate(-(2.0f * mousePosX / width() - 1.0f),
+								-(2.0f * (height() - mousePosY) / height() - 1.0f));
 }
 
 void FractalWindow::wheelEvent(QWheelEvent * e)
@@ -148,4 +156,15 @@ void FractalWindow::wheelEvent(QWheelEvent * e)
 	QPoint num_degrees = e->angleDelta();
 	float whellScaling = 1.0f - 0.05f * num_degrees.y() / 8.0f;
 	transform_.scale(whellScaling, whellScaling);
+}
+
+void FractalWindow::countFPS()
+{
+    float current_time = timer_.elapsed() * 0.001f;
+    fps_label_->setText("fps: " + QString::number(frames_));
+    if (current_time - last_time_ > 1.0f)
+    {
+        last_time_ = current_time;
+        frames_ = 0;
+    }
 }
