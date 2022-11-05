@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Shaders/lightning.fs</file>
+        <file>Shaders/lightning.vs</file>
+    </qresource>
+</RCC>

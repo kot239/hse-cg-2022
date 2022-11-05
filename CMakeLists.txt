@@ -1,0 +1,36 @@
+cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
+
+project(hse-cg-2022 VERSION 1.0.0 LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+if (MSVC)
+    # warning level 4 and all warnings as errors
+    add_compile_options(/W4 /WX)
+    # disable warning for qt.
+    add_compile_options(/wd5240)
+else()
+    # lots of warnings and all warnings as errors
+    add_compile_options(-Wall -Wextra -pedantic -Werror)
+endif()
+
+set(BUILD_SHARED_LIBS OFF)
+set(ASSIMP_INSTALL OFF)
+set(ASSIMP_WARNINGS_AS_ERRORS OFF)
+set(ASSIMP_BUILD_TESTS OFF)
+
+add_subdirectory(thirdparty)
+
+include_directories(
+        src
+        thirdparty
+)
+
+# For Qt
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
+
+add_subdirectory(src/Base)
+add_subdirectory(src/App)
