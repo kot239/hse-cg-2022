@@ -43,6 +43,14 @@ private:
 
     QSharedPointer<Node> rootNode_;
 
+    GLint matModel_ = -1;
+    GLint matView_ = -1;
+    GLint matProjection_ = -1;
+    GLint matNormal_ = -1;
+    GLint lightPos_ = -1;
+
+    QMatrix4x4 model_, view_, projection_;
+
     int frames_ = 0;
     float last_time_ = 0.0f;
     QElapsedTimer timer_;

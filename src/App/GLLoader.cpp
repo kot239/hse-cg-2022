@@ -72,17 +72,11 @@ void GLLoader::init()
     program_->setAttributeBuffer(1, GL_FLOAT, 0, 3, static_cast<int>(3 * sizeof(GLfloat)));
 
     // Declare uniform variables
-    /*
-    fractalColor_1_ = program_->uniformLocation("in_col1");
-    fractalColor_2_ = program_->uniformLocation("in_col2");
-    windowHeight_ = program_->uniformLocation("height");
-    windowWidth_ = program_->uniformLocation("width");
-    maxIterations_ = program_->uniformLocation("max_it");
-    fractalRadius_ = program_->uniformLocation("radius");
-    fractalPower_ = program_->uniformLocation("power");
-    matrix_ = program_->uniformLocation("transform");
-     */
-
+    matModel_ = program_->uniformLocation("model");
+    matView_ = program_->uniformLocation("view");
+    matProjection_ = program_->uniformLocation("projection");
+    matNormal_ = program_->uniformLocation("normalMatrix");
+    lightPos_ = program_->uniformLocation("lightPos");
 
     timer_.start();
 
@@ -94,6 +88,22 @@ void GLLoader::init()
     ibo_.release();
     nbo_.release();
     vbo_.release();
+
+    // Prepare matrixes
+    model_.setToIdentity();
+    view_.setToIdentity();
+    view_.lookAt(
+            QVector3D(0.0f, 0.0f, 1.2f),   // Camera Position
+            QVector3D(0.0f, 0.0f, 0.0f), // Point camera looks towards
+            QVector3D(0.0f, 1.0f, 0.0f));   // Up vector
+
+    float aspect = 4.0f/3.0f;
+    projection_.setToIdentity();
+    projection_.perspective(
+            60.0f,  // field of vision
+            aspect,  // aspect ratio
+            0.3f,     // near clipping plane
+            1000.0f);  // far clipping plane
 
     // Uncomment to enable depth test and face culling
     glEnable(GL_DEPTH_TEST);
@@ -119,17 +129,16 @@ void GLLoader::render()
 	program_->bind();
 	vao_.bind();
 
+    QMatrix4x4 modelView = view_ * model_;
+    QMatrix3x3 normalMatrix = modelView.normalMatrix();
+    QVector3D light = QVector3D(-1.0f, 1.0f, 1.0f);
+
 	// Update uniform value
-    /*
-	program_->setUniformValue(fractalColor_1_, in_col1);
-	program_->setUniformValue(fractalColor_2_, in_col2);
-	program_->setUniformValue(windowHeight_, height());
-	program_->setUniformValue(windowWidth_, width());
-	program_->setUniformValue(maxIterations_, max_it_);
-	program_->setUniformValue(fractalRadius_, radius_);
-	program_->setUniformValue(fractalPower_, power_);
-	program_->setUniformValue(matrix_, transform_);
-     */
+	program_->setUniformValue(matModel_, model_);
+	program_->setUniformValue(matView_, view_);
+	program_->setUniformValue(matProjection_, projection_);
+    program_->setUniformValue(matNormal_, normalMatrix);
+    program_->setUniformValue(lightPos_, light);
 
 	// Draw
         drawNode(rootNode_.data());
