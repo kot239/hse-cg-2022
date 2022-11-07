@@ -1,6 +1,6 @@
 #version 330 core
 
-// in vec3 viewPos;
+in vec3 rawPos;
 in vec3 fragPos;
 in vec3 rawNormal;
 
@@ -10,7 +10,10 @@ out vec4 out_col;
 
 void main()
 {
-    vec3 objColor = vec3(1.0f, 0.0f, 0.0f);
+    // morph coordinates
+
+
+    vec3 objColor = mix(vec3(1.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 1.0f), (rawPos.y + 0.22) / 0.4);
     vec3 lightColor = vec3(1.0f, 1.0f, 1.0f);
 
     // ambient
@@ -18,7 +21,6 @@ void main()
     vec3 ambient = ambientStrength * lightColor;
 
     // diffuse
-
     vec3 normalizedNorm = normalize(rawNormal);
     vec3 lightDir = normalize(lightPos - fragPos);
 

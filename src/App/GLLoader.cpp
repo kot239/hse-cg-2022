@@ -77,6 +77,7 @@ void GLLoader::init()
     matProjection_ = program_->uniformLocation("projection");
     matNormal_ = program_->uniformLocation("normalMatrix");
     lightPos_ = program_->uniformLocation("lightPos");
+    modelTime_ = program_->uniformLocation("time");
 
     model_.setToIdentity();
     //model_.scale(1.0f, 1.0f, -1.0f);
@@ -124,6 +125,7 @@ void GLLoader::render()
 	program_->release();
 
     frames_++;
+    total_frames_++;
     countFPS();
 }
 
@@ -205,6 +207,7 @@ void GLLoader::drawNode(const Node *node) {
     program_->setUniformValue(matProjection_, projection_);
     program_->setUniformValue(matNormal_, normalMatrix);
     program_->setUniformValue(lightPos_, light);
+    program_->setUniformValue(modelTime_, total_frames_);
 
     for (auto & mesh : node->meshes) {
         glDrawElements(GL_TRIANGLES, mesh->indexCount, GL_UNSIGNED_INT,

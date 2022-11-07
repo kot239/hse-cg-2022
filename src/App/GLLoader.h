@@ -51,11 +51,13 @@ private:
     GLint matProjection_ = -1;
     GLint matNormal_ = -1;
     GLint lightPos_ = -1;
+    GLint modelTime_ = -1;
 
     QMatrix4x4 model_, view_, projection_;
     QVector3D cameraPos_ = QVector3D(0.0f, 0.0f, 1.2f);
 
     int frames_ = 0;
+    int total_frames_ = 0;
     float last_time_ = 0.0f;
     QElapsedTimer timer_;
 
