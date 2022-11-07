@@ -47,6 +47,9 @@ int main(int argc, char ** argv)
     l->addWidget(container);
     l->addLayout(vl);
 
+    QLabel *nameLabel = new QLabel("THE MODEL LOADER");
+
+    vl->addWidget(nameLabel);
     vl->addWidget(FPSLabel);
 	vl->addStretch(1);
 
@@ -55,7 +58,7 @@ int main(int argc, char ** argv)
 	window->resize(1000, 900);
 	window->show();
 
-    //glWindow->setAnimated(true);
+    glWindow->setAnimated(true);
 
 	return app.exec();
 }
