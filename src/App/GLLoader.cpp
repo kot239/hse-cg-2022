@@ -78,6 +78,8 @@ void GLLoader::init()
     matNormal_ = program_->uniformLocation("normalMatrix");
     lightPos_ = program_->uniformLocation("lightPos");
     modelTime_ = program_->uniformLocation("time");
+    lightColor_ = program_->uniformLocation("lightColor");
+    isVertexLightning_ = program_->uniformLocation("isVertexLightning");
 
     model_.setToIdentity();
     //model_.scale(1.0f, 1.0f, -1.0f);
@@ -129,8 +131,16 @@ void GLLoader::render()
     countFPS();
 }
 
+
+void GLLoader::setIsVertexLightning() {
+    flagIsVertexLightning_ = true;
+}
+
+void GLLoader::setIsFragmentLightning() {
+    flagIsVertexLightning_ = false;
+}
+
 void GLLoader::keyPressEvent(QKeyEvent * e) {
-    //qDebug() << "press key";
     pressedKeys_.insert(e->key());
 }
 
@@ -178,10 +188,6 @@ void GLLoader::processEvents() {
 
 void GLLoader::drawNode(const Node *node) {
     // Prepare matrixes
-    //model_.setToIdentity();
-    //model_.translate(0.0f, 0.0f, -1.0f);
-    //model_.rotate(55.0f, 0.0f, 1.0f, 0.0f);
-
     view_.setToIdentity();
     view_.lookAt(
             cameraPos_,   // Camera Position
@@ -201,6 +207,8 @@ void GLLoader::drawNode(const Node *node) {
     QMatrix3x3 normalMatrix = modelView.normalMatrix();
     QVector3D light = QVector3D(-1.0f, 1.0f, 1.0f);
 
+    QVector3D ligthColor = QVector3D(1.0f, 1.0f, 1.0f);
+
     // Update uniform value
     program_->setUniformValue(matModel_, model_);
     program_->setUniformValue(matView_, view_);
@@ -208,6 +216,8 @@ void GLLoader::drawNode(const Node *node) {
     program_->setUniformValue(matNormal_, normalMatrix);
     program_->setUniformValue(lightPos_, light);
     program_->setUniformValue(modelTime_, total_frames_);
+    program_->setUniformValue(lightColor_, ligthColor);
+    program_->setUniformValue(isVertexLightning_, flagIsVertexLightning_);
 
     for (auto & mesh : node->meshes) {
         glDrawElements(GL_TRIANGLES, mesh->indexCount, GL_UNSIGNED_INT,

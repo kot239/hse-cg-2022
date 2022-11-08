@@ -80,7 +80,7 @@ QSharedPointer<Mesh> ModelLoader::processMesh(aiMesh *mesh) {
             min_z = std::min(min_z, vec.z);
         }
 
-        qDebug() << "x:" << min_x << max_x << "y:" << min_y << max_y << "z:" << min_z << max_z;
+        //qDebug() << "x:" << min_x << max_x << "y:" << min_y << max_y << "z:" << min_z << max_z;
     }
 
     // get normals

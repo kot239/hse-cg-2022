@@ -2,6 +2,16 @@
 
 ## Contains
 
+- Model of human head
+- fps counter
+- 2 types of Phong lightning (vertex and fragment)
+- Morphing of human head
+
+## How to move model
+
+- if you want to zoom model, you should scroll wheel
+- if you want to spin model, first, you should tap on the openGL window and then use left and right buttons
+- if you want to move model up and down, first, you should tap on the openGL window and then use up and down buttons
 
 ## Requirements
 

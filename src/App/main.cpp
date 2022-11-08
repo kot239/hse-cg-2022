@@ -3,9 +3,9 @@
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QRadioButton>
 #include <QLabel>
 #include <QSpinBox>
-#include <QDoubleSpinBox>
 
 #include "GLLoader.h"
 
@@ -47,9 +47,17 @@ int main(int argc, char ** argv)
     l->addWidget(container);
     l->addLayout(vl);
 
-    QLabel *nameLabel = new QLabel("THE MODEL LOADER");
+    QRadioButton *buttonVert = new QRadioButton("Vertex lightning");
+    QRadioButton *buttonFrag = new QRadioButton("Fragment lightning");
+    buttonVert->setChecked(true);
 
-    vl->addWidget(nameLabel);
+    QObject::connect(buttonVert, &QRadioButton::clicked, glWindow,
+                     &GLLoader::setIsVertexLightning);
+    QObject::connect(buttonFrag, &QRadioButton::clicked, glWindow,
+                     &GLLoader::setIsFragmentLightning);
+
+    vl->addWidget(buttonVert);
+    vl->addWidget(buttonFrag);
     vl->addWidget(FPSLabel);
 	vl->addStretch(1);
 
